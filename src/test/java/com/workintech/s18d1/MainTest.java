@@ -1,5 +1,6 @@
 package com.workintech.s18d1;
 
+import com.workintech.s18d1.controller.BurgerController;
 import com.workintech.s18d1.dao.BurgerDao;
 import com.workintech.s18d1.dao.BurgerDaoImpl;
 import com.workintech.s18d1.entity.BreadType;
@@ -110,8 +111,9 @@ class MainTest {
 
     @Test
     void testFindById_NotExists() {
-        when(entityManager.find(Burger.class, 999L)).thenReturn(null);
-        assertThrows(BurgerException.class, () -> burgerDao.findById(999L));
+        BurgerController burgerController = new BurgerController(burgerDao);
+        when(burgerDao.findById(999L)).thenReturn(null);
+        assertThrows(BurgerException.class, () -> burgerController.getBurgerById(999L));
     }
 
     @Test
@@ -138,7 +140,7 @@ class MainTest {
         TypedQuery<Burger> query = mock(TypedQuery.class);
         when(entityManager.createQuery(anyString(), eq(Burger.class))).thenReturn(query);
         when(query.getResultList()).thenReturn(Arrays.asList(new Burger(), new Burger()));
-        List<Burger> burgers = burgerDao.findByPrice(10);
+        List<Burger> burgers = burgerDao.findByPrice(10.00);
         assertEquals(2, burgers.size());
     }
 
